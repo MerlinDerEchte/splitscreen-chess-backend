@@ -120,23 +120,27 @@ io.on("connection", (socket) => {
         }
     })
 
+    
+
     socket.on("disconnect", () => {
         // if only one player is disconnect wait for a minute and then delete the room and notify the other player that he has won
-
+        
         const room = gameRooms.find(r => {
-            for (let player of r.getPlayers()) {
+            for (let player of r.players) {
                 if (player.socketId === socket.id) return true
             }
             return false;
         })
 
+      
+        
 
-        if (room.players.find(p => p.socketId === socket.id)) {
-            console.log("   disconnecting   " + socket.id);
+
+        if (room && room.players.find(p => p.socketId === socket.id)) {
+
             const otherPlayer = room.players.find(p => p.socketId !== socket.id)
             io.to(otherPlayer.socketId).emit("other player left");
-            gameRooms = gameRooms.filter(r => r !== room);
-
+            //gameRooms = gameRooms.filter(r => r !== room);
         }
 
 
