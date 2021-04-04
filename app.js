@@ -130,14 +130,15 @@ io.on("connection", (socket) => {
             return false;
         })
 
-        for (let room of gameRooms) {
-            console.log(room.players.find(p => p.id === socket.id))
-            if (room.players.find(p => p.id === socket.id)) {
-                console.log("   disconnecting   " + socket.id)
-                gameRooms = gameRooms.filter(r => r !== room);
 
-            }
+        if (room.players.find(p => p.socketId === socket.id)) {
+            console.log("   disconnecting   " + socket.id);
+            const otherPlayer = room.players.find(p => p.socketId !== socket.id)
+            io.to(otherPlayer.socketId).emit("other player left");
+            gameRooms = gameRooms.filter(r => r !== room);
+
         }
+
 
     })
 
