@@ -19,7 +19,9 @@ const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
         origin: true
-    }
+    },
+    pingInterval: 10000,
+    pingTimeout: 15000,
 });
 
 let gameRooms = [];
@@ -70,7 +72,8 @@ io.on("connection", (socket) => {
         } else {
             const player = room.getPlayers().find(p => p.id === playerId);
             if (player) {
-
+                socket.join(gameID);
+                player.setSocketId(socket.id);
             } else {
                 socket.emit("your game doesn't exist anymore");
             }
@@ -118,6 +121,14 @@ io.on("connection", (socket) => {
     })
 
     socket.on("disconnect", () => {
+        // if only one player is disconnect wait for a minute and then delete the room and notify the other player that he has won
+
+        const room = gameRooms.find(r => {
+            for (let player of r.getPlayers()) {
+                if (player.socketId === socket.id) return true
+            }
+            return false;
+        })
 
         for (let room of gameRooms) {
             console.log(room.players.find(p => p.id === socket.id))
