@@ -46,44 +46,47 @@ app.get('/newgame', (req, res) => {
 
 
 io.on("connection", (socket) => {
-    console.log("connecting ", socket.id)
+
     socket.on('joingame', (gameId, playerId) => {
-        
-        if (!playerId) {
+        console.log(playerId)
+        const room = gameRooms.find(r => r.id === gameId);
 
-            const room = gameRooms.find(r => r.id === gameId);
-            const playerId = new uuid.v4();
-
-            if (room) {
-                const numberPlayers = room.getPlayers().length;
-                if (numberPlayers === 0) {
-                    room.addPlayer(playerId, socket.id);
-                    socket.join(gameId)
-                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, true)
+        if (room) {
+            if (!playerId) {
+                const playerId =  uuid.v4();
+                if (room) {
+                    const numberPlayers = room.getPlayers().length;
+                    if (numberPlayers === 0) {
+                        room.addPlayer(playerId, socket.id);
+                        socket.join(gameId)
+                        socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, true)
+                    }
+                    if (numberPlayers === 1) {
+                        room.addPlayer(playerId, socket.id);
+                        socket.join(gameId);
+                        console.log("player, ", playerId)
+                        socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, false);
+                        io.to(room.id).emit('gameReady');
+                        io.to(room.id).emit('gameChanged',
+                            room.Game.Board
+                        );
+                    } else {
+                        socket.emit('roomIsFull');
+                    }
                 }
-                if (numberPlayers === 1) {
-                    room.addPlayer(playerId, socket.id);
-                    socket.join(gameId);
-                    
-                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, false);
-                    io.to(room.id).emit('gameReady');
-                    io.to(room.id).emit('gameChanged',
-                        room.Game.Board
-                    );
-                }else{
-                    socket.emit('roomIsFull');
-                }
-            }
-        } else {
-            const player = room.getPlayers().find(p => p.id === playerId);
-            if (player) {
-                socket.join(gameID);
-                player.setSocketId(socket.id);
             } else {
-                socket.emit("gameNotExisting");
-            }
-        }
 
+                const player = room.getPlayers().find(p => p.id === playerId);
+                if (player) {
+                    socket.join(gameID);
+                    player.setSocketId(socket.id);
+                } else {
+                    socket.emit("gameNotExisting");
+                }
+            }
+        }else{
+            socket.emit("gameNotExisting");
+        }
 
     })
 
@@ -125,11 +128,11 @@ io.on("connection", (socket) => {
         }
     })
 
-    
+
 
     socket.on('disconnect', () => {
         // if only one player is disconnect wait for a minute and then delete the room and notify the other player that he has won
-        
+
         const room = gameRooms.find(r => {
             for (let player of r.players) {
                 if (player.socketId === socket.id) return true
