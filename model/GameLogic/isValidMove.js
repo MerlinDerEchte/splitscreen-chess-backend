@@ -11,7 +11,7 @@ function isValidMove(move, board) {
         if (move.otherMovedPiece) {
 
             // if king is attacked you can't move him 
-            if(isKingAttacked(baord)){
+            if(isKingAttacked(board)){
                 return false;
             }
 

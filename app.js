@@ -47,13 +47,14 @@ app.get('/newgame', (req, res) => {
 io.on("connection", (socket) => {
     console.log("connecting ", socket.id)
     socket.on('joingame', (gameId, playerId) => {
+        
         if (!playerId) {
+
             const room = gameRooms.find(r => r.id === gameId);
             const playerId = new uuid.v4();
+
             if (room) {
                 const numberPlayers = room.getPlayers().length;
-
-
                 if (numberPlayers === 0) {
                     room.addPlayer(playerId, socket.id);
                     socket.join(gameId)
@@ -132,15 +133,12 @@ io.on("connection", (socket) => {
             return false;
         })
 
-      
-        
-
-
         if (room && room.players.find(p => p.socketId === socket.id)) {
 
             const otherPlayer = room.players.find(p => p.socketId !== socket.id)
             io.to(otherPlayer.socketId).emit("other player left");
-            //gameRooms = gameRooms.filter(r => r !== room);
+            gameRooms = gameRooms.filter(r => r !== room);
+            console.log(gameRooms)
         }
 
 
