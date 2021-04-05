@@ -10,7 +10,8 @@ function isValidMove(move, board) {
         //Rochade 
         if (move.otherMovedPiece) {
 
-            // if king is attacked you can't move him 
+            // if king is attacked you can't move him    
+            
             if(isKingAttacked(board)){
                 return false;
             }
