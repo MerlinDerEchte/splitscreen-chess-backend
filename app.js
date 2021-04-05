@@ -29,7 +29,7 @@ let gameRooms = [];
 app.get('/newgame', (req, res) => {
     // controller
 
-    
+
     const gameID = uuid.v4();
     const newGame = createNewGame();
 
@@ -59,16 +59,19 @@ io.on("connection", (socket) => {
                 if (numberPlayers === 0) {
                     room.addPlayer(playerId, socket.id);
                     socket.join(gameId)
-                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor())
+                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, true)
                 }
                 if (numberPlayers === 1) {
                     room.addPlayer(playerId, socket.id);
                     socket.join(gameId);
+                    
+                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId, false);
                     io.to(room.id).emit('gameReady');
-                    socket.emit('joinedGame', room.getPlayers().find(p => p.socketId === socket.id).getColor(), playerId)
                     io.to(room.id).emit('gameChanged',
                         room.Game.Board
-                    )
+                    );
+                }else{
+                    socket.emit('roomIsFull');
                 }
             }
         } else {
@@ -77,7 +80,7 @@ io.on("connection", (socket) => {
                 socket.join(gameID);
                 player.setSocketId(socket.id);
             } else {
-                socket.emit("your game doesn't exist anymore");
+                socket.emit("gameNotExisting");
             }
         }
 
@@ -124,7 +127,7 @@ io.on("connection", (socket) => {
 
     
 
-    socket.on("disconnect", () => {
+    socket.on('disconnect', () => {
         // if only one player is disconnect wait for a minute and then delete the room and notify the other player that he has won
         
         const room = gameRooms.find(r => {
@@ -137,7 +140,7 @@ io.on("connection", (socket) => {
         if (room && room.players.find(p => p.socketId === socket.id)) {
 
             const otherPlayer = room.players.find(p => p.socketId !== socket.id)
-            io.to(otherPlayer.socketId).emit("other player left");
+            if (otherPlayer) io.to(otherPlayer.socketId).emit('otherPlayerLeft');
             gameRooms = gameRooms.filter(r => r !== room);
             console.log(gameRooms)
         }
