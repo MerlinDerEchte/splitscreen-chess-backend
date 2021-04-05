@@ -29,6 +29,7 @@ let gameRooms = [];
 app.get('/newgame', (req, res) => {
     // controller
 
+    
     const gameID = uuid.v4();
     const newGame = createNewGame();
 
