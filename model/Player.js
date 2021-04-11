@@ -1,9 +1,9 @@
 const Colors = require('./GameLogic/Colors');
 class Player{
-    constructor(id, socketId){
+    constructor(id, socketId, color){
         this.id = id;
         this.socketId = socketId;
-        this.color
+        this.color = color;
     }
 
     getColor(){
@@ -16,6 +16,10 @@ class Player{
 
     setSocketId(id){
         this.socketId = id;
+    }
+
+    removeSocketId(){
+        this.socketId = null;
     }
 }
 
