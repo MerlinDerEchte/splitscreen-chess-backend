@@ -13,7 +13,7 @@ function makeMove(game, move){
 
     const newGame = game.copy();
     const newBoard = getBoardAfterMove(newGame.Board , move) ;
-   
+    
     newBoard.isGameOver = isGameOver(newBoard);
     newGame.Board = newBoard;
     newGame.BoardHistory.push(game.Board);

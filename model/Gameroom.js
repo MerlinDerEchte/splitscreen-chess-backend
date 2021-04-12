@@ -2,11 +2,11 @@ const Player = require('./Player');
 const Colors = require('./GameLogic/Colors');
 const Game = require('./GameLogic/Game');
 class Gameroom{
-    constructor(id, Game, lastUpdate){
+    constructor(id, Game){
         this.id = id;
         this.players = [];
         this.Game = Game;
-        this.lastUpdate = lastUpdate;
+        this.lastUpdate = new Date();
     }
     getID(){
         return this.id;
@@ -29,14 +29,15 @@ class Gameroom{
             const newPlayer = new Player(id, socketId, newPlayerColor);
             this.players.push(newPlayer);
         }
+        this.setLastUpdate();
     }
 
     getGame(){
         return this.Game;
     }
 
-    setLastUpdate(update){
-        this.lastUpdate = update;
+    setLastUpdate(){
+        this.lastUpdate = new Date();
     }
         
 }

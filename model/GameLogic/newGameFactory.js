@@ -4,7 +4,7 @@ const Types = require('./Types');
 const Colors = require('./Colors')
 const Piece = require('./Piece');
 
-function createNewGame(){
+function newGameFactory(){
 
     const nextActivePieces = [];
     let i = 0;
@@ -71,4 +71,4 @@ function createNewGame(){
     return new Game(newBoard,[]);
 }   
 
-module.exports = createNewGame;
+module.exports = newGameFactory;

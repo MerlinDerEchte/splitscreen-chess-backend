@@ -8,7 +8,7 @@ const index = require("./routes/index");
 
 const Gameroom = require('./model/Gameroom');
 const app = express();
-const createNewGame = require('./model/GameLogic/createNewGame');
+const newGameFactory = require('./model/GameLogic/newGameFactory');
 const makeMove = require('./model/GameLogic/makeMove');
 const moveFactory = require('./model/GameLogic/moveFactory');
 const undoMove = require('./model/GameLogic/undoMove');
@@ -28,10 +28,8 @@ let gameRooms = [];
 
 app.get('/newgame', (req, res) => {
     // controller
-
-
     const gameID = uuid.v4();
-    const newGame = createNewGame();
+    const newGame = newGameFactory();
 
     console.log('creating new room  ', gameID);
     //newGame.getAllMoves();
@@ -82,7 +80,7 @@ io.on("connection", (socket) => {
 
                 const player = room.getPlayers().find(p => p.id === playerId);
                 if (player) {
-
+                    room.setLastUpdate();
                     socket.join(gameID);
                     player.setSocketId(socket.id);
 
@@ -123,7 +121,9 @@ io.on("connection", (socket) => {
 
     socket.on('undoMoveRequest', gameRoomID => {
         const room = gameRooms.find(r => r.id === gameRoomID);
+       
         if (room) {
+            room.setLastUpdate();
             socket.to(room.id).emit('undoMoveRequest');
         }
     })
@@ -133,6 +133,7 @@ io.on("connection", (socket) => {
         if (room) {
             const newGame = undoMove(room.Game);
             room.Game = newGame;
+            room.setLastUpdate();
             io.to(room.id).emit('gameChanged', room.Game.Board)
         }
     })
@@ -166,7 +167,6 @@ io.on("connection", (socket) => {
 
             console.log(gameRooms)
         }
-
 
     })
 
