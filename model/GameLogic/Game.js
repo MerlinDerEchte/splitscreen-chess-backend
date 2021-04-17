@@ -15,10 +15,6 @@ class Game {
         
         return new Game(newBoard, newBoardHistory, newWinner);
     }
-
-
-    
-
 }
 
 module.exports = Game

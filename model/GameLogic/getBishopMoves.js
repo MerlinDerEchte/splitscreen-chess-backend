@@ -2,6 +2,7 @@
 const Move = require('./Move');
 
 function getBishopMoves(board, piece) {
+    
     let possibleMovesBishop = [];
 
     let bishopRow = Math.floor(piece.getPosition() / 8);

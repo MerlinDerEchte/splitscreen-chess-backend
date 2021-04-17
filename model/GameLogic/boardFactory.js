@@ -6,7 +6,7 @@ function boardFactory(obj){
     const graveyardPieces = obj.graveyardPieces.map(piece => pieceFactory(piece));
     const turn = obj.turn;
     const round = obj.round;
-    const lastMvoedPiece = pieceFactory(lastMvoedPiece);
+    const lastMovedPiece = pieceFactory(obj.lastMovedPiece);
     const isGameOver = obj.isGameOver; 
     return new Board(activePieces,graveyardPieces,turn,round,lastMovedPiece,isGameOver);
 }

@@ -6,13 +6,14 @@ function getBoardAfterMove(board, move){
     const movedPiece = move.piece.copy();
     movedPiece.move(move.targetPosition);
     exchangedPieces.push(movedPiece);
-    
+    // piece affected by castling
     if(move.otherMovedPiece){
         const otherMovedPiece = move.otherMovedPiece.copy(); 
         otherMovedPiece.move(move.otherTargetPosition);
         exchangedPieces.push(otherMovedPiece)
     }
     const newBoard = board.copyWithExchangedPieces(exchangedPieces);
+    // captured piece
     if(move.removePiece){
         newBoard.removePiece(move.removePiece);
         const newRemovedPiece = move.removePiece.copy();

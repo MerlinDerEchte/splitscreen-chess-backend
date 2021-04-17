@@ -16,6 +16,7 @@ class Board {
     }
 
     getPieceByPosition(position) {
+
         const position_FilterCondition = new PieceFilterCondition('position', position, PieceFilterConditionTypes.EQUAL);
         const positionFilter = new PieceFilter([position_FilterCondition]);
         const pieces = positionFilter.filter(this.activePieces);
@@ -47,6 +48,7 @@ class Board {
     }
 
     switchTurn(){
+
         if(this.turn === Colors.WHITE){
             this.turn = Colors.BLACK;
         }else{
@@ -56,6 +58,7 @@ class Board {
 
 
     copy() {
+
         const newActivePieces = this.activePieces.map(p => p.copy());
         const newGraveyardPieces = this.graveyardPieces.map(p => p.copy());
         const newTurn = this.turn;
@@ -73,6 +76,7 @@ class Board {
     }
 
     copyWithExchangedPieces(pieces){
+
         const newBoard = this.copy();
         const idFilterConditions = pieces.map(piece => {
             return(new PieceFilterCondition('id', piece.id, PieceFilterConditionTypes.UNEQUAL));
@@ -85,6 +89,7 @@ class Board {
     }
 
     removePiece(piece){
+        
         const idFilterCondition = new PieceFilterCondition('id',piece.id,PieceFilterConditionTypes.UNEQUAL);
         const idFilter = new PieceFilter([idFilterCondition]);
         this.activePieces = idFilter.filter(this.activePieces);

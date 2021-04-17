@@ -10,7 +10,7 @@ function isValidMove(move, board) {
         //Rochade 
         if (move.otherMovedPiece) {
 
-            // if king is attacked you can't move him    
+            // if king is attacked you can't castle  
             
             if(isKingAttacked(board)){
                 return false;
@@ -34,7 +34,7 @@ function isValidMove(move, board) {
     }
 
 
-    // get POsition of the King and check if 
+    // get the board after the move and check if the king would be attacked 
 
     
     const newBoard = getBoardAfterMove( board, move);
