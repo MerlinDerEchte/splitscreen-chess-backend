@@ -137,6 +137,13 @@ io.on("connection", (socket) => {
             io.to(room.id).emit('gameChanged', room.Game.Board)
         }
     })
+    socket.on('denyUndoMove', gameRoomID => {
+        const room = gameRooms.find(r => r.id === gameRoomID);
+        if(room){
+            io.to(room.id).emit('gameChanged', room.Game.Board)
+        }
+        
+    } )
 
 
 
