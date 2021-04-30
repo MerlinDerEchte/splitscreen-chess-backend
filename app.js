@@ -151,7 +151,7 @@ io.on("connection", (socket) => {
 
             return false;
         })
-        console.log(room, player)
+      
 
         if (room && player) {
             
@@ -162,7 +162,7 @@ io.on("connection", (socket) => {
                 io.to(otherPlayer.socketId).emit('otherPlayerLeft');
             } else {
                 player.removeSocketId();
-                gameRooms = gameRooms.filter(r => r !== room);
+                gameRooms = gameRooms.filter(r => r.id !== room.id);
             }
 
             console.log(gameRooms)

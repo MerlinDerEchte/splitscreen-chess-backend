@@ -13,7 +13,7 @@ class Game {
         const newBoard = this.Board.copy();
         const newBoardHistory = this.BoardHistory.map(board => board.copy());
         
-        return new Game(newBoard, newBoardHistory, newWinner);
+        return new Game(newBoard, newBoardHistory);
     }
 }
 
